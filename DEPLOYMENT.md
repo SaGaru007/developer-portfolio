@@ -41,6 +41,16 @@ repository root and builds in place:
 - Build: `pnpm build`
 - Output: `dist`
 
+## Downloads and bundled files
+
+The resume and the certificate PDFs are committed under `src/frontend/public/files/`. Vercel
+serves `public/` as static files, so these downloads never depend on the API, on an upload
+surviving a restart, or on the service being awake.
+
+The pages still read from the API first. When a request fails or a table is empty, the bundled
+content in `src/frontend/src/data/portfolio-data.ts` fills the gap, which is what keeps the site
+complete on a host whose disk is not persisted.
+
 ## Render settings
 
 | Variable | Purpose |
