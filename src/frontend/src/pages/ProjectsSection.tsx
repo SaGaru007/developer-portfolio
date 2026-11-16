@@ -27,7 +27,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Year + badges row */}
-          <div className="flex flex-nowrap items-center gap-2 mb-2 whitespace-nowrap">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className="font-mono text-[10px] tracking-wider text-secondary shrink-0">
               {project.year}
             </span>

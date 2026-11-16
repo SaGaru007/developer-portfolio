@@ -110,7 +110,7 @@ export const projects: Project[] = [
     featured: true,
     githubUrl: "",
     year: "2023 - 2025",
-    category: "Machine Learning / Academic",
+    category: "Machine Learning",
     isAcademic: true,
   },
 ];
