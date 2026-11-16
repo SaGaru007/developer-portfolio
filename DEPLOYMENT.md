@@ -33,12 +33,13 @@ If the Render service is renamed or moved, update those three destinations and r
 
 ## Vercel project settings
 
-Import the repository and leave the **root directory** at the repository root - the build
-commands in `vercel.json` handle the pnpm workspace:
+Import the repository and set the **root directory to `src/frontend`** with the **Vite** preset.
+The frontend is a pnpm workspace package, so `src/frontend/vercel.json` installs from the
+repository root and builds in place:
 
-- Install: `pnpm install --frozen-lockfile`
-- Build: `pnpm --filter sagar-portfolio-frontend build`
-- Output: `src/frontend/dist`
+- Install: `cd ../.. && pnpm install --frozen-lockfile`
+- Build: `pnpm build`
+- Output: `dist`
 
 ## Render settings
 
