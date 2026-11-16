@@ -5,3 +5,11 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   sharp: true
+# pnpm 9/10 read onlyBuiltDependencies and ignore allowBuilds; newer pnpm reads
+# allowBuilds. Both are listed so the frontend build works whichever version the
+# host (Vercel) installs with, since a blocked esbuild postinstall breaks vite.
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - better-sqlite3
+  - esbuild
+  - sharp
