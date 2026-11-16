@@ -87,6 +87,32 @@ export const projects: Project[] = [
     category: "Full Stack / E-Commerce",
     isAcademic: false,
   },
+  {
+    id: "medicinal-plant-detection",
+    title:
+      "Medicinal Plant Detection Using Image Processing and Machine Learning",
+    description:
+      "An academic project that identifies medicinal plant species from leaf photographs. Leaf images are cleaned and segmented with classical image processing, the feature data is prepared with NumPy and pandas, and a machine learning model predicts the species. A Flask application lets a user upload a photo and read the result, with an HTML, CSS and JavaScript front end.",
+    longDescription:
+      "Final-year project on automated medicinal plant identification. Leaf images are pre-processed and segmented, features are prepared with NumPy and pandas inside Jupyter Notebook, and a machine learning classifier is trained and evaluated on the prepared dataset. The trained model is served through a Flask API with a browser interface for uploading an image and viewing the predicted species.",
+    tags: [
+      "Python",
+      "Machine Learning",
+      "Image Processing",
+      "Flask",
+      "Jupyter Notebook",
+      "NumPy",
+      "pandas",
+      "HTML",
+      "CSS",
+      "JavaScript",
+    ],
+    featured: true,
+    githubUrl: "",
+    year: "2023 - 2025",
+    category: "Machine Learning / Academic",
+    isAcademic: true,
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
@@ -202,8 +228,16 @@ export const certificates: Certificate[] = [
     title: "Spring Boot Microservices Application with GCP Cloud",
     issuer: "Coursera",
     date: "2025",
+    fileUrl: "/files/certificates/spring-boot-microservices-gcp.pdf",
   },
 ];
+
+/**
+ * The resume is committed to the repository rather than uploaded through the
+ * admin panel. The API stores uploads on the service disk, which a free hosting
+ * plan does not persist, so a static copy keeps the download working.
+ */
+export const resumeFile = "/files/Sagar-M-H-Resume.pdf";
 
 export const socialLinks: SocialLink[] = [
   {

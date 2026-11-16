@@ -7,7 +7,8 @@ export interface Project {
   featured: boolean;
   liveUrl?: string;
   githubUrl?: string;
-  year: number;
+  /** A single year, or a range such as "2023 - 2025" for longer academic work. */
+  year: number | string;
   imageUrl?: string;
   category?: string;
   isAcademic?: boolean;

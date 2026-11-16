@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { bio } from "@/data/portfolio-data";
+import { bio, resumeFile } from "@/data/portfolio-data";
 import { usePortfolioSettings } from "@/hooks/use-portfolio-settings";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useTypewriter } from "@/hooks/useTypewriter";
@@ -117,7 +117,7 @@ export function HeroSection() {
 
   const localPhotoUrl = useProfilePhoto();
   const photoUrl = settings?.photo_url || localPhotoUrl;
-  const resumeUrl = settings?.resume_url || undefined;
+  const resumeHref = settings?.resume_url ? "/resume" : resumeFile;
 
   const badgeRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
   const headingRef = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
@@ -244,15 +244,10 @@ export function HeroSection() {
               </Button>
 
               <a
-                href={resumeUrl ? "/resume" : undefined}
+                href={resumeHref}
                 download="Sagar-M-H-Resume.pdf"
-                aria-disabled={!resumeUrl}
-                title={
-                  resumeUrl
-                    ? "Download resume"
-                    : "Upload a resume from the admin page to enable downloads"
-                }
-                className={`inline-flex items-center justify-center gap-2 font-display text-base tracking-wider uppercase h-12 px-7 rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${resumeUrl ? "hover:brightness-110" : "opacity-60 pointer-events-none"}`}
+                title="Download resume"
+                className="inline-flex items-center justify-center gap-2 font-display text-base tracking-wider uppercase h-12 px-7 rounded-md transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:brightness-110"
                 style={{ background: "#00D9FF", color: "#050505" }}
                 data-ocid="hero.resume_download_button"
               >

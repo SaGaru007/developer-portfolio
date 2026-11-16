@@ -1,3 +1,4 @@
+import { resumeFile } from "@/data/portfolio-data";
 import { usePortfolioSettings } from "@/hooks/use-portfolio-settings";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Download, Menu, X } from "lucide-react";
@@ -26,7 +27,7 @@ export function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const { data: settings } = usePortfolioSettings();
-  const resumeUrl = settings?.resume_url || undefined;
+  const resumeHref = settings?.resume_url ? "/resume" : resumeFile;
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -88,15 +89,10 @@ export function Header() {
 
             {/* Resume download — blue accent */}
             <a
-              href={resumeUrl ? "/resume" : undefined}
+              href={resumeHref}
               download="Sagar-M-H-Resume.pdf"
-              aria-disabled={!resumeUrl}
-              title={
-                resumeUrl
-                  ? "Download resume"
-                  : "Upload a resume from the admin page to enable downloads"
-              }
-              className={`ml-2 inline-flex items-center gap-1.5 font-display text-xs font-bold tracking-wider uppercase px-4 py-2 rounded-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${resumeUrl ? "hover:brightness-110" : "opacity-60 pointer-events-none"}`}
+              title="Download resume"
+              className="ml-2 inline-flex items-center gap-1.5 font-display text-xs font-bold tracking-wider uppercase px-4 py-2 rounded-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:brightness-110"
               style={{
                 background: "#00D9FF",
                 color: "#050505",
@@ -151,16 +147,11 @@ export function Header() {
 
           <div className="flex gap-2 mt-4">
             <a
-              href={resumeUrl ? "/resume" : undefined}
+              href={resumeHref}
               download="Sagar-M-H-Resume.pdf"
               onClick={() => setMenuOpen(false)}
-              aria-disabled={!resumeUrl}
-              title={
-                resumeUrl
-                  ? "Download resume"
-                  : "Upload a resume from the admin page to enable downloads"
-              }
-              className={`flex-1 inline-flex items-center justify-center gap-1.5 font-display text-xs font-bold tracking-wider uppercase py-2.5 rounded-sm transition-all duration-200 ${resumeUrl ? "hover:brightness-110" : "opacity-60 pointer-events-none"}`}
+              title="Download resume"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 font-display text-xs font-bold tracking-wider uppercase py-2.5 rounded-sm transition-all duration-200 hover:brightness-110"
               style={{ background: "#00D9FF", color: "#050505" }}
               data-ocid="header.mobile_resume_download_button"
             >

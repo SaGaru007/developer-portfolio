@@ -96,7 +96,43 @@ if (db.prepare("SELECT COUNT(*) AS count FROM certificates").get().count === 0) 
     "Spring Boot Microservices Application with GCP Cloud",
     "Coursera",
     "2025",
-    "",
+    "/files/certificates/spring-boot-microservices-gcp.pdf",
+  );
+}
+
+// A database seeded before these rows existed keeps its old contents, so the
+// additions are applied by title instead of only on an empty table. The
+// certificate files ship with the frontend, which is why the paths are static.
+{
+  const plantProject =
+    "Medicinal Plant Detection Using Image Processing and Machine Learning";
+  db.prepare(
+    `INSERT INTO projects (title, description, tech_stack, github_link, demo_link)
+     SELECT ?, ?, ?, '', ''
+     WHERE NOT EXISTS (SELECT 1 FROM projects WHERE title = ?)`,
+  ).run(
+    plantProject,
+    "An academic project that identifies medicinal plant species from leaf photographs. Leaf images are cleaned and segmented with classical image processing, the feature data is prepared with NumPy and pandas, and a machine learning model predicts the species. A Flask application lets a user upload a photo and read the result, with an HTML, CSS and JavaScript front end.",
+    JSON.stringify([
+      "Python",
+      "Machine Learning",
+      "Image Processing",
+      "Flask",
+      "Jupyter Notebook",
+      "NumPy",
+      "pandas",
+      "HTML",
+      "CSS",
+      "JavaScript",
+    ]),
+    plantProject,
+  );
+
+  db.prepare(
+    "UPDATE certificates SET file_url = ? WHERE title = ? AND (file_url IS NULL OR file_url = '')",
+  ).run(
+    "/files/certificates/spring-boot-microservices-gcp.pdf",
+    "Spring Boot Microservices Application with GCP Cloud",
   );
 }
 if (db.prepare("SELECT COUNT(*) AS count FROM experience").get().count === 0) {

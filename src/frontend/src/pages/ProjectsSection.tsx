@@ -122,11 +122,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 export function ProjectsSection() {
   const [showAll, setShowAll] = useState(false);
   const headerRef = useScrollAnimation<HTMLDivElement>();
-  const {
-    data: backendProjects = [],
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: backendProjects } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
       const response = await fetch("/api/projects");
@@ -142,22 +138,32 @@ export function ProjectsSection() {
     },
   });
 
-  const projectEntries: Project[] = backendProjects.map((project, index) => {
-    const existing = projects.find((item) => item.title === project.title);
-    return {
-      id: String(project.id),
-      title: project.title,
-      description: project.description,
-      longDescription: project.description,
-      tags: project.techStack,
-      featured: existing?.featured ?? index === 0,
-      liveUrl: project.demoLink || undefined,
-      githubUrl: project.githubLink || undefined,
-      year: existing?.year ?? new Date().getFullYear(),
-      category: existing?.category,
-      isAcademic: existing?.isAcademic,
-    };
-  });
+  const projectEntries: Project[] = (backendProjects ?? []).map(
+    (project, index) => {
+      const existing = projects.find((item) => item.title === project.title);
+      return {
+        id: String(project.id),
+        title: project.title,
+        description: project.description,
+        longDescription: project.description,
+        tags: project.techStack,
+        featured: existing?.featured ?? index === 0,
+        liveUrl: project.demoLink || undefined,
+        githubUrl: project.githubLink || undefined,
+        year: existing?.year ?? new Date().getFullYear(),
+        category: existing?.category,
+        isAcademic: existing?.isAcademic,
+      };
+    },
+  );
+
+  // The API is the source of truth for edits made in the admin panel, but the
+  // backend sleeps on a free host and its database is not persisted between
+  // restarts, so bundled entries fill any gap by title.
+  const knownTitles = new Set(projectEntries.map((p) => p.title.toLowerCase()));
+  projectEntries.push(
+    ...projects.filter((p) => !knownTitles.has(p.title.toLowerCase())),
+  );
   const featured = projectEntries.filter((p) => p.featured);
   const displayed = showAll ? projectEntries : featured;
 
@@ -188,19 +194,11 @@ export function ProjectsSection() {
         </div>
 
         {/* Project grid */}
-        {isLoading ? (
-          <p className="text-muted-foreground">Loading projects…</p>
-        ) : isError ? (
-          <p role="alert" className="text-destructive">
-            Projects could not be loaded. Check that the local API is running.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayed.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayed.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
+        </div>
 
         {/* Show all toggle */}
         {projectEntries.length > featured.length && (

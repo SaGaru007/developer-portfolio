@@ -1,9 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/Card";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  useScrollAnimation,
-  useStaggeredScroll,
-} from "@/hooks/useScrollAnimation";
+import { certificates as staticCertificates } from "@/data/portfolio-data";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useQuery } from "@tanstack/react-query";
 import { Award, Calendar, Download, Shield, Star } from "lucide-react";
 
@@ -26,6 +23,10 @@ function CertificateCard({
   index: number;
 }) {
   const IconComponent = CERT_ICONS[index % CERT_ICONS.length];
+  // Each card observes itself: the cards mount after the API responds, so a
+  // single observer set up on the empty grid would never see them and they
+  // would stay at opacity 0.
+  const ref = useScrollAnimation<HTMLElement>({ rootMargin: "0px 0px -40px 0px" });
   const certificateHeading = (
     <div className="flex-1 min-w-0">
       <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary mb-1 truncate">
@@ -39,9 +40,9 @@ function CertificateCard({
 
   return (
     <article
+      ref={ref}
       className="scroll-hidden group relative flex flex-col bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-200"
       style={{ transitionDelay: `${index * 80}ms` }}
-      data-stagger
       data-ocid={`certificates.item.${index + 1}`}
     >
       {/* Top accent line */}
@@ -107,31 +108,8 @@ function CertificateCard({
   );
 }
 
-function CertCardSkeleton({ index }: { index: number }) {
-  return (
-    <div
-      className="bg-card border border-border/40 rounded-xl p-5 space-y-3"
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
-      <div className="flex items-start gap-4">
-        <Skeleton className="w-11 h-11 rounded-lg shrink-0" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-3 w-24" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </div>
-      <Skeleton className="h-3 w-16" />
-    </div>
-  );
-}
-
 export function CertificatesSection() {
-  const {
-    data: backendCerts = [],
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: backendCerts } = useQuery({
     queryKey: ["certificates"],
     queryFn: async () => {
       const response = await fetch("/api/certificates");
@@ -146,16 +124,31 @@ export function CertificatesSection() {
     },
   });
 
-  const displayCerts: DisplayCertificate[] = backendCerts.map((c) => ({
-    id: String(c.id),
+  // Content is owned by the API, but the backend sleeps on a free host and any
+  // certificate uploaded through the admin panel sits on a disk that is wiped on
+  // restart. The bundled list keeps the section populated and the downloads
+  // working in both cases.
+  const localCerts: DisplayCertificate[] = staticCertificates.map((c) => ({
+    id: c.id,
     title: c.title,
     issuer: c.issuer,
     date: c.date,
-    fileAssetId: c.fileAssetId || undefined,
+    fileAssetId: c.fileUrl || c.fileAssetId,
   }));
 
+  const displayCerts: DisplayCertificate[] = backendCerts?.length
+    ? backendCerts.map((c) => ({
+        id: String(c.id),
+        title: c.title,
+        issuer: c.issuer,
+        date: c.date,
+        fileAssetId:
+          c.fileAssetId ||
+          localCerts.find((local) => local.title === c.title)?.fileAssetId,
+      }))
+    : localCerts;
+
   const headerRef = useScrollAnimation<HTMLDivElement>();
-  const gridRef = useStaggeredScroll<HTMLDivElement>("[data-stagger]");
 
   return (
     <section
@@ -183,31 +176,9 @@ export function CertificatesSection() {
           </p>
         </div>
 
-        {/* Loading skeletons */}
-        {isLoading && (
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            data-ocid="certificates.loading_state"
-          >
-            {Array.from({ length: 3 }).map((_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton indices are stable
-              <CertCardSkeleton key={i} index={i} />
-            ))}
-          </div>
-        )}
-        {isError && (
-          <p role="alert" className="mb-5 text-destructive">
-            Certificates could not be loaded. Check that the local API is
-            running.
-          </p>
-        )}
-
         {/* Certificate grid */}
-        {!isLoading && displayCerts.length > 0 && (
-          <div
-            ref={gridRef}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+        {displayCerts.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayCerts.map((cert, i) => (
               <CertificateCard key={cert.id} cert={cert} index={i} />
             ))}
@@ -215,7 +186,7 @@ export function CertificatesSection() {
         )}
 
         {/* Empty state */}
-        {!isLoading && displayCerts.length === 0 && (
+        {displayCerts.length === 0 && (
           <div
             className="flex flex-col items-center justify-center py-20 text-center"
             data-ocid="certificates.empty_state"
@@ -234,7 +205,7 @@ export function CertificatesSection() {
         )}
 
         {/* Count badge */}
-        {!isLoading && displayCerts.length > 0 && (
+        {displayCerts.length > 0 && (
           <div className="mt-10 flex justify-center">
             <span className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground px-4 py-1.5 rounded-full border border-border/40">
               <Award size={11} className="text-primary" aria-hidden="true" />
