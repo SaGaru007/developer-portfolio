@@ -222,6 +222,7 @@ export const certificates: Certificate[] = [
     title: "Java Wipro Fullstack Certification",
     issuer: "Wipro",
     date: "2024",
+    fileUrl: "/files/certificates/java-wipro-fullstack.pdf",
   },
   {
     id: "spring-boot-gcp",

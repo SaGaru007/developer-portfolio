@@ -128,12 +128,22 @@ if (db.prepare("SELECT COUNT(*) AS count FROM certificates").get().count === 0) 
     plantProject,
   );
 
-  db.prepare(
+  const certificateFiles = [
+    [
+      "/files/certificates/spring-boot-microservices-gcp.pdf",
+      "Spring Boot Microservices Application with GCP Cloud",
+    ],
+    [
+      "/files/certificates/java-wipro-fullstack.pdf",
+      "Java Wipro Fullstack Certification",
+    ],
+  ];
+  const setCertificateFile = db.prepare(
     "UPDATE certificates SET file_url = ? WHERE title = ? AND (file_url IS NULL OR file_url = '')",
-  ).run(
-    "/files/certificates/spring-boot-microservices-gcp.pdf",
-    "Spring Boot Microservices Application with GCP Cloud",
   );
+  for (const [fileUrl, title] of certificateFiles) {
+    setCertificateFile.run(fileUrl, title);
+  }
 }
 if (db.prepare("SELECT COUNT(*) AS count FROM experience").get().count === 0) {
   const insert = db.prepare(
