@@ -213,16 +213,19 @@ export const education: Education[] = [
 export const certificates: Certificate[] = [
   {
     id: "salesforce-admin",
-    title: "Salesforce Administrator",
-    issuer: "Trailhead",
+    title: "Salesforce Administrator Virtual Internship",
+    issuer: "SmartBridge / AICTE",
     date: "2024",
+    fileUrl: "/files/certificates/salesforce-administrator.jpg",
+    aliasTitles: ["Salesforce Administrator"],
   },
   {
     id: "java-wipro-fullstack",
-    title: "Java Wipro Fullstack Certification",
-    issuer: "Wipro",
+    title: "Wipro TalentNext Java Full Stack Certification",
+    issuer: "Wipro TalentNext",
     date: "2024",
-    fileUrl: "/files/certificates/java-wipro-fullstack.pdf",
+    fileUrl: "/files/certificates/wipro-talentnext-java-fullstack.pdf",
+    aliasTitles: ["Java Wipro Fullstack Certification"],
   },
   {
     id: "spring-boot-gcp",

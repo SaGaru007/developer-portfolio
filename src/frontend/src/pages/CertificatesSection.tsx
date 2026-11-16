@@ -124,10 +124,11 @@ export function CertificatesSection() {
     },
   });
 
-  // Content is owned by the API, but the backend sleeps on a free host and any
-  // certificate uploaded through the admin panel sits on a disk that is wiped on
-  // restart. The bundled list keeps the section populated and the downloads
-  // working in both cases.
+  // Each certificate below is shown from the bundled data, because that is where
+  // the exact wording of the document and its downloadable file live. Anything
+  // added later through the admin panel is appended from the API, and entries the
+  // API still holds under an earlier title are matched through aliasTitles so the
+  // card does not appear twice.
   const localCerts: DisplayCertificate[] = staticCertificates.map((c) => ({
     id: c.id,
     title: c.title,
@@ -136,17 +137,23 @@ export function CertificatesSection() {
     fileAssetId: c.fileUrl || c.fileAssetId,
   }));
 
-  const displayCerts: DisplayCertificate[] = backendCerts?.length
-    ? backendCerts.map((c) => ({
-        id: String(c.id),
-        title: c.title,
-        issuer: c.issuer,
-        date: c.date,
-        fileAssetId:
-          c.fileAssetId ||
-          localCerts.find((local) => local.title === c.title)?.fileAssetId,
-      }))
-    : localCerts;
+  const knownTitles = new Set(
+    staticCertificates
+      .flatMap((c) => [c.title, ...(c.aliasTitles ?? [])])
+      .map((title) => title.toLowerCase()),
+  );
+
+  const addedCerts: DisplayCertificate[] = (backendCerts ?? [])
+    .filter((c) => !knownTitles.has(c.title.toLowerCase()))
+    .map((c) => ({
+      id: String(c.id),
+      title: c.title,
+      issuer: c.issuer,
+      date: c.date,
+      fileAssetId: c.fileAssetId || undefined,
+    }));
+
+  const displayCerts: DisplayCertificate[] = [...localCerts, ...addedCerts];
 
   const headerRef = useScrollAnimation<HTMLDivElement>();
 

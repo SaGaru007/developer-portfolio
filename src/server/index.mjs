@@ -90,8 +90,18 @@ if (db.prepare("SELECT COUNT(*) AS count FROM certificates").get().count === 0) 
   const insert = db.prepare(
     "INSERT INTO certificates (title, issuer, date, file_url) VALUES (?, ?, ?, ?)",
   );
-  insert.run("Salesforce Administrator", "Trailhead", "2024", "");
-  insert.run("Java Wipro Fullstack Certification", "Wipro", "2024", "");
+  insert.run(
+    "Salesforce Administrator Virtual Internship",
+    "SmartBridge / AICTE",
+    "2024",
+    "/files/certificates/salesforce-administrator.jpg",
+  );
+  insert.run(
+    "Wipro TalentNext Java Full Stack Certification",
+    "Wipro TalentNext",
+    "2024",
+    "/files/certificates/wipro-talentnext-java-fullstack.pdf",
+  );
   insert.run(
     "Spring Boot Microservices Application with GCP Cloud",
     "Coursera",
@@ -134,8 +144,16 @@ if (db.prepare("SELECT COUNT(*) AS count FROM certificates").get().count === 0) 
       "Spring Boot Microservices Application with GCP Cloud",
     ],
     [
-      "/files/certificates/java-wipro-fullstack.pdf",
+      "/files/certificates/wipro-talentnext-java-fullstack.pdf",
       "Java Wipro Fullstack Certification",
+    ],
+    [
+      "/files/certificates/wipro-talentnext-java-fullstack.pdf",
+      "Wipro TalentNext Java Full Stack Certification",
+    ],
+    [
+      "/files/certificates/salesforce-administrator.jpg",
+      "Salesforce Administrator",
     ],
   ];
   const setCertificateFile = db.prepare(

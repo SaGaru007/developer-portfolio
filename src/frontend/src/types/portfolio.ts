@@ -21,6 +21,8 @@ export interface Certificate {
   date: string;
   fileUrl?: string;
   fileAssetId?: string;
+  /** Earlier titles of the same certificate, still present in older databases. */
+  aliasTitles?: string[];
 }
 
 export interface Experience {
