@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter sagar-portfolio-frontend build",
+  "outputDirectory": "src/frontend/dist",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://portfolio-1-y0hc.onrender.com/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://portfolio-1-y0hc.onrender.com/uploads/$1" },
+    { "source": "/resume", "destination": "https://portfolio-1-y0hc.onrender.com/resume" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
